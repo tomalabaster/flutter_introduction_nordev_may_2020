@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
+import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
@@ -12,9 +14,9 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: Header(avatars: this._renderAvatars()),
       body: Column(
         children: [
-          this._renderHeader(),
           this._renderTabs(),
           Expanded(
             child: ListView.builder(
@@ -56,44 +58,6 @@ class _TaskScreenState extends State<TaskScreen> {
           print(result);
         },
         child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _renderHeader() {
-    return Container(
-      height: 200,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xff646AD0),
-            Color(0xff9E6DBC),
-          ],
-        ),
-      ),
-      padding: EdgeInsets.fromLTRB(4, 40, 4, 4),
-      child: Column(
-        children: [
-          Text(
-            'Whizzy',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Redesign App',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          Spacer(),
-          this._renderAvatars(),
-        ],
       ),
     );
   }
@@ -247,22 +211,5 @@ class _TaskScreenState extends State<TaskScreen> {
         actions: actions,
       );
     }
-  }
-}
-
-class StatusChip extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Text(
-        'Ongoing',
-        style: TextStyle(fontSize: 12),
-      ),
-    );
   }
 }
