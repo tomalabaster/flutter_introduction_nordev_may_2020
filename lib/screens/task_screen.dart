@@ -14,7 +14,7 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(this._renderAvatars()),
+      appBar: Header(avatars: this._renderAvatars()),
       body: Column(
         children: [
           this._renderTabs(),
