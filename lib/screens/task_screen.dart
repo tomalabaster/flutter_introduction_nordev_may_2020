@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
 
@@ -19,45 +20,13 @@ class _TaskScreenState extends State<TaskScreen> {
         children: [
           this._renderTabs(),
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(0),
-              itemBuilder: (context, index) {
-                return this._renderSubtaskRow(index);
-              },
-            ),
+            child: this._renderDoneList(),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var result = await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return this.getAlertDialog(
-                title: Text('test'),
-                content: Text('This is some context'),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                    },
-                    child: Text('Ok!'),
-                  ),
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text('No!'),
-                  ),
-                ],
-              );
-            },
-          );
-
-          print(result);
-        },
-        child: Icon(Icons.add),
+        child: Icon(Icons.close),
+        onPressed: () {},
       ),
     );
   }
@@ -95,58 +64,16 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget _renderTabs() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
-      child: Row(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                Text(
-                  'Live'.toUpperCase(),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Container(
-                  height: 4,
-                  color: Colors.transparent,
-                )
-              ],
-            ),
-          ),
-          SizedBox(width: 30),
-          Container(
-            child: Column(
-              children: [
-                Text(
-                  'Done'.toUpperCase(),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Container(
-                  width: 44,
-                  height: 4,
-                  color: Colors.deepPurple,
-                )
-              ],
-            ),
-          ),
-          SizedBox(width: 30),
-          Container(
-            child: Column(
-              children: [
-                Text(
-                  'Stand-by'.toUpperCase(),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Container(
-                  height: 4,
-                  color: Colors.transparent,
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: TabSelector(),
+    );
+  }
+
+  Widget _renderDoneList() {
+    return ListView.builder(
+      padding: EdgeInsets.all(0),
+      itemBuilder: (context, index) {
+        return this._renderSubtaskRow(index);
+      },
     );
   }
 
