@@ -27,6 +27,7 @@ class HomeScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
         onPressed: () {
           var count = this.myBox.get('count', defaultValue: 0) as int;
 
