@@ -18,7 +18,12 @@ class _TaskScreenState extends State<TaskScreen> {
       appBar: Header(avatars: this._renderAvatars()),
       body: Column(
         children: [
-          this._renderTabs(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+            child: TabSelector(
+              tabs: ['Live', 'Done', 'Stand-by'],
+            ),
+          ),
           Expanded(
             child: this._renderDoneList(),
           ),
@@ -58,13 +63,6 @@ class _TaskScreenState extends State<TaskScreen> {
         Spacer(),
         StatusChip(),
       ],
-    );
-  }
-
-  Widget _renderTabs() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
-      child: TabSelector(),
     );
   }
 
