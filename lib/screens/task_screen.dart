@@ -3,16 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
-import 'package:flutter_nordev_may_2020_live/mixins/alert_dialog_mixin.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
-  int _currentIndex = 0;
-
+class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,25 +24,10 @@ class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
                 'Done',
                 'Stand-by',
               ],
-              currentTab: this._currentIndex,
-              onTabSelected: (newTabIndex) {
-                setState(() {
-                  this._currentIndex = newTabIndex;
-                });
-              },
             ),
           ),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
-              /*transitionBuilder: (child, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: child,
-                );
-              },*/
-              child: this._renderActiveList(),
-            ),
+            child: this._renderDoneList(),
           ),
         ],
       ),
@@ -54,19 +36,6 @@ class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
         onPressed: () {},
       ),
     );
-  }
-
-  Widget _renderActiveList() {
-    switch (this._currentIndex) {
-      case 0:
-        return this._renderLiveList();
-      case 1:
-        return this._renderDoneList();
-      case 2:
-        return this._renderStandByList();
-      default:
-        return Text('I shouldn\'t ever show!');
-    }
   }
 
   Widget _renderAvatars() {
