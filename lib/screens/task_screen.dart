@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
+import 'package:flutter_nordev_may_2020_live/utils/alert_dialog_action.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
@@ -34,30 +37,17 @@ class _TaskScreenState extends State<TaskScreen> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.close),
         onPressed: () async {
-          var delete = await showCupertinoDialog<bool>(
-            barrierDismissible: true,
-            context: context,
-            builder: (context) {
-              return CupertinoAlertDialog(
-                title: Text('Alert dialog!'),
-                content: Text('Are you sure you want to delete this?'),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text('No'),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                  ),
-                  CupertinoDialogAction(
-                    child: Text('Yes'),
-                    onPressed: () {
-                      Navigator.of(context).pop(true);
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+          var delete = await this.showAlertDialog(
+              title: 'Alert dialog',
+              content: 'Are you sure you want to delete this?',
+              actions: [
+                AlertDialogAction('No', (context) {
+                  Navigator.of(context).pop(false);
+                }),
+                AlertDialogAction('Yes', (context) {
+                  Navigator.of(context).pop(true);
+                }),
+              ]);
 
           print(delete);
 
@@ -67,6 +57,48 @@ class _TaskScreenState extends State<TaskScreen> {
         },
       ),
     );
+  }
+
+  Future<T> showAlertDialog<T>({
+    @required String title,
+    @required String content,
+    @required List<AlertDialogAction> actions,
+  }) {
+    if (Platform.isIOS) {
+      return showCupertinoDialog<T>(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: actions.map((action) {
+              return CupertinoDialogAction(
+                child: Text(action.text),
+                onPressed: () => action.onTapped(context),
+              );
+            }).toList(),
+          );
+        },
+      );
+    } else {
+      return showDialog<T>(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: actions.map((action) {
+              return FlatButton(
+                child: Text(action.text),
+                onPressed: () => action.onTapped(context),
+              );
+            }).toList(),
+          );
+        },
+      );
+    }
   }
 
   Widget _renderAvatars() {
