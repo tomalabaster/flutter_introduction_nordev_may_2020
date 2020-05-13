@@ -1,35 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_item.dart';
+import 'package:flutter_nordev_may_2020_live/mixins/alert_dialog_mixin.dart';
 
-class TabSelector extends StatefulWidget {
+class TabSelector extends StatelessWidget with AlertDialogMixin {
   final List<String> tabs;
-  final int initialTab;
+  final int currentTab;
   final Function(int) onTabSelected;
 
-  const TabSelector({Key key, this.tabs, this.initialTab, this.onTabSelected})
+  const TabSelector({Key key, this.tabs, this.currentTab, this.onTabSelected})
       : super(key: key);
 
   @override
-  _TabSelectorState createState() => _TabSelectorState();
-}
-
-class _TabSelectorState extends State<TabSelector> {
-  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return TabItem(
-              text: this.widget.tabs[index],
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: List.generate(
+          this.tabs.length,
+          (index) {
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              child: TabItem(
+                text: this.tabs[index],
+                selected: this.currentTab == index,
+              ),
+              onTap: () {
+                this.onTabSelected(index);
+              },
             );
           },
-          separatorBuilder: (context, index) {
-            return SizedBox(width: 30);
-          },
-          itemCount: this.widget.tabs.length),
+        ),
+      ),
     );
   }
 }

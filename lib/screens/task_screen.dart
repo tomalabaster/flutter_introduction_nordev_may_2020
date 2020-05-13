@@ -1,17 +1,18 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
+import 'package:flutter_nordev_may_2020_live/mixins/alert_dialog_mixin.dart';
 
 class TaskScreen extends StatefulWidget {
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> {
+class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,11 +22,30 @@ class _TaskScreenState extends State<TaskScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
             child: TabSelector(
-              tabs: ['Live', 'Done', 'Stand-by'],
+              tabs: [
+                'Live',
+                'Done',
+                'Stand-by',
+              ],
+              currentTab: this._currentIndex,
+              onTabSelected: (newTabIndex) {
+                setState(() {
+                  this._currentIndex = newTabIndex;
+                });
+              },
             ),
           ),
           Expanded(
-            child: this._renderDoneList(),
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              /*transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: child,
+                );
+              },*/
+              child: this._renderActiveList(),
+            ),
           ),
         ],
       ),
@@ -34,6 +54,19 @@ class _TaskScreenState extends State<TaskScreen> {
         onPressed: () {},
       ),
     );
+  }
+
+  Widget _renderActiveList() {
+    switch (this._currentIndex) {
+      case 0:
+        return this._renderLiveList();
+      case 1:
+        return this._renderDoneList();
+      case 2:
+        return this._renderStandByList();
+      default:
+        return Text('I shouldn\'t ever show!');
+    }
   }
 
   Widget _renderAvatars() {
@@ -66,16 +99,43 @@ class _TaskScreenState extends State<TaskScreen> {
     );
   }
 
-  Widget _renderDoneList() {
+  Widget _renderLiveList() {
+    final numberOfElements = 4;
     return ListView.builder(
+      key: Key('liveList'),
       padding: EdgeInsets.all(0),
+      itemCount: numberOfElements,
       itemBuilder: (context, index) {
-        return this._renderSubtaskRow(index);
+        return this._renderSubtaskRow(index, index == numberOfElements - 1);
       },
     );
   }
 
-  Widget _renderSubtaskRow(int index) {
+  Widget _renderDoneList() {
+    final numberOfElements = 10;
+    return ListView.builder(
+      key: Key('doneList'),
+      padding: EdgeInsets.all(0),
+      itemCount: numberOfElements,
+      itemBuilder: (context, index) {
+        return this._renderSubtaskRow(index, index == numberOfElements - 1);
+      },
+    );
+  }
+
+  Widget _renderStandByList() {
+    final numberOfElements = 2;
+    return ListView.builder(
+      key: Key('standByList'),
+      padding: EdgeInsets.all(0),
+      itemCount: numberOfElements,
+      itemBuilder: (context, index) {
+        return this._renderSubtaskRow(index, index == numberOfElements - 1);
+      },
+    );
+  }
+
+  Widget _renderSubtaskRow(int index, bool isLast) {
     return Row(
       children: [
         SizedBox(
@@ -89,7 +149,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 child: Container(
                   color: Color(0xffC9E8DB),
                   width: 4,
-                  height: 60,
+                  height: isLast ? 30 : 60,
                 ),
               ),
               Center(
@@ -120,21 +180,5 @@ class _TaskScreenState extends State<TaskScreen> {
         )
       ],
     );
-  }
-
-  Widget getAlertDialog({Widget title, Widget content, List<Widget> actions}) {
-    if (Platform.isIOS) {
-      return CupertinoAlertDialog(
-        title: title,
-        content: content,
-        actions: actions,
-      );
-    } else {
-      return AlertDialog(
-        title: title,
-        content: content,
-        actions: actions,
-      );
-    }
   }
 }
