@@ -33,7 +33,38 @@ class _TaskScreenState extends State<TaskScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.close),
-        onPressed: () {},
+        onPressed: () async {
+          var delete = await showCupertinoDialog<bool>(
+            barrierDismissible: true,
+            context: context,
+            builder: (context) {
+              return CupertinoAlertDialog(
+                title: Text('Alert dialog!'),
+                content: Text('Are you sure you want to delete this?'),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text('No'),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text('Yes'),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+
+          print(delete);
+
+          if (delete ?? false) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
