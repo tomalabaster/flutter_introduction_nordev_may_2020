@@ -30,7 +30,9 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
-        '/task': (context) => TaskScreen(),
+        '/task': (context) => TaskScreen(
+              todo: ModalRoute.of(context).settings.arguments,
+            ),
       },
     );
   }

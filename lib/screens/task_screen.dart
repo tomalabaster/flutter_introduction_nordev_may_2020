@@ -1,14 +1,20 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
+import 'package:flutter_nordev_may_2020_live/todo.dart';
 import 'package:flutter_nordev_may_2020_live/utils/alert_dialog_action.dart';
 import 'package:flutter_nordev_may_2020_live/utils/alert_dialog_mixin.dart';
 
 class TaskScreen extends StatefulWidget {
+  final ToDo todo;
+
+  const TaskScreen({
+    Key key,
+    this.todo,
+  }) : super(key: key);
+
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
@@ -19,7 +25,10 @@ class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(avatars: this._renderAvatars()),
+      appBar: Header(
+          title: this.widget.todo.title,
+          subtitle: this.widget.todo.subtitle,
+          avatars: this._renderAvatars()),
       body: Column(
         children: [
           Padding(
@@ -38,7 +47,7 @@ class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
           ),
           Expanded(
             child: AnimatedSwitcher(
-              duration: const Duration(seconds: 2),
+              duration: const Duration(milliseconds: 500),
               transitionBuilder: (child, animation) {
                 return ScaleTransition(
                   scale: animation,
