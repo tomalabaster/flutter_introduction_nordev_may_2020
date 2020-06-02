@@ -3,17 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/tabs/tab_selector.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/header.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_screen/status_chip.dart';
+import 'package:flutter_nordev_may_2020_live/todo.dart';
+import 'package:flutter_nordev_may_2020_live/utils/alert_dialog_action.dart';
+import 'package:flutter_nordev_may_2020_live/utils/alert_dialog_mixin.dart';
 
 class TaskScreen extends StatefulWidget {
+  final ToDo todo;
+
+  const TaskScreen({
+    Key key,
+    this.todo,
+  }) : super(key: key);
+
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> {
+class _TaskScreenState extends State<TaskScreen> with AlertDialogMixin {
+  int _currentSelectedTab = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(avatars: this._renderAvatars()),
+      appBar: Header(
+          title: this.widget.todo.title,
+          subtitle: this.widget.todo.subtitle,
+          avatars: this._renderAvatars()),
       body: Column(
         children: [
           Padding(
@@ -24,18 +39,60 @@ class _TaskScreenState extends State<TaskScreen> {
                 'Done',
                 'Stand-by',
               ],
+              currentTab: this._currentSelectedTab,
+              onTabSelected: (newTabIndex) {
+                setState(() => this._currentSelectedTab = newTabIndex);
+              },
             ),
           ),
           Expanded(
-            child: this._renderDoneList(),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              transitionBuilder: (child, animation) {
+                return ScaleTransition(
+                  scale: animation,
+                  child: child,
+                );
+              },
+              child: this._renderActiveTab(),
+            ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.close),
-        onPressed: () {},
+        onPressed: () async {
+          var delete = await this.showAlertDialog<bool>(context,
+              title: 'Alert dialog',
+              content: 'Are you sure you want to delete this?',
+              actions: [
+                AlertDialogAction('No', (context) {
+                  Navigator.of(context).pop(false);
+                }),
+                AlertDialogAction('Yes', (context) {
+                  Navigator.of(context).pop(true);
+                }),
+              ]);
+
+          if (delete ?? false) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
+  }
+
+  Widget _renderActiveTab() {
+    switch (this._currentSelectedTab) {
+      case 0:
+        return this._renderLiveList();
+      case 1:
+        return this._renderDoneList();
+      case 2:
+        return this._renderStandByList();
+      default:
+        return Text('I will never show!');
+    }
   }
 
   Widget _renderAvatars() {

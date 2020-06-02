@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final String subtitle;
   final Widget avatars;
 
-  const Header({Key key, @required this.avatars}) : super(key: key);
+  const Header({Key key, @required this.avatars, this.title, this.subtitle})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
       child: Column(
         children: [
           Text(
-            'Whizzy',
+            this.title,
             style: TextStyle(
               color: Colors.white,
               fontSize: 28,
@@ -29,7 +32,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
           ),
           SizedBox(height: 8),
           Text(
-            'Redesign App',
+            this.subtitle,
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,

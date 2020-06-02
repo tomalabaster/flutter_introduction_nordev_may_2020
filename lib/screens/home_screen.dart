@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nordev_may_2020_live/components/task_row.dart';
+import 'package:flutter_nordev_may_2020_live/screens/task_screen.dart';
+import 'package:flutter_nordev_may_2020_live/todo.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -19,7 +21,10 @@ class HomeScreen extends StatelessWidget {
               return GestureDetector(
                 child: TaskRow(),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/task');
+                  final todo =
+                      ToDo('Tom\'s todo', 'Commit code at end of talk');
+
+                  Navigator.of(context).pushNamed('/task', arguments: todo);
                 },
               );
             },
